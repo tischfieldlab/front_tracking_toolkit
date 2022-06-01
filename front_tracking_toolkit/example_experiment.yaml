@@ -1,0 +1,98 @@
+config:
+  basedir: E:\Flow Pictures - complete data set\Flow Images\analysis
+#  tracking_pattern: 'tracking_15/{subject}/{stain}/vf.csv'
+  tracking_pattern: 'tracking/{subject}/{stain}/vf.csv'
+
+pipeline:
+  preprocess:
+    reg:
+      enabled: True
+  tracking:
+    threshold: 15
+
+
+
+samples:
+- subject: 10
+  stain: 'ova'
+  images: E:\Flow Pictures - complete data set\Flow Images\Twist CKO+\10\*.tif
+  metadata:
+    genotype: Twist CKO+
+- subject: 31
+  stain: 'ova'
+  images: E:\Flow Pictures - complete data set\Flow Images\Twist CKO+\31\*.tif
+  metadata:
+    genotype: Twist CKO+
+- subject: 47
+  stain: 'ova'
+  images: E:\Flow Pictures - complete data set\Flow Images\Twist CKO+\47\*.tif
+  metadata:
+    genotype: Twist CKO+
+- subject: 84
+  stain: 'ova'
+  images: E:\Flow Pictures - complete data set\Flow Images\Twist CKO+\84\*.tif
+  metadata:
+    genotype: Twist CKO+
+- subject: 118
+  stain: 'ova'
+  images: E:\Flow Pictures - complete data set\Flow Images\Twist CKO+\118\*.tif
+  metadata:
+    genotype: Twist CKO+
+- subject: 126
+  stain: 'ova'
+  images: E:\Flow Pictures - complete data set\Flow Images\Twist CKO+\126\*.tif
+  metadata:
+    genotype: Twist CKO+
+- subject: 132
+  stain: 'ova'
+  images: E:\Flow Pictures - complete data set\Flow Images\Twist CKO+\132\*.tif
+  metadata:
+    genotype: Twist CKO+
+- subject: 9
+  stain: 'ova'
+  images: E:\Flow Pictures - complete data set\Flow Images\Twist CKO+ ; Sm22a-Cre\9\*.tif
+  metadata:
+    genotype: Twist CKO+; Sm22a-Cre
+- subject: 12
+  stain: 'ova'
+  images: E:\Flow Pictures - complete data set\Flow Images\Twist CKO+ ; Sm22a-Cre\12\*.tif
+  scale:
+    - 0.01
+    - mm
+  metadata:
+    genotype: Twist CKO+; Sm22a-Cre
+- subject: 75
+  stain: 'ova'
+  images: E:\Flow Pictures - complete data set\Flow Images\Twist CKO+ ; Sm22a-Cre\75\*.tif
+  metadata:
+    genotype: Twist CKO+; Sm22a-Cre
+- subject: 76
+  stain: 'ova'
+  images: E:\Flow Pictures - complete data set\Flow Images\Twist CKO+ ; Sm22a-Cre\76\*.tif
+  metadata:
+    genotype: Twist CKO+; Sm22a-Cre
+- subject: 77
+  stain: 'ova'
+  images: E:\Flow Pictures - complete data set\Flow Images\Twist CKO+ ; Sm22a-Cre\77\*.tif
+  metadata:
+    genotype: Twist CKO+; Sm22a-Cre
+- subject: 79
+  stain: 'ova'
+  images: E:\Flow Pictures - complete data set\Flow Images\Twist CKO+ ; Sm22a-Cre\79\*.tif
+  metadata:
+    genotype: Twist CKO+; Sm22a-Cre
+- subject: 83
+  stain: 'ova'
+  images: E:\Flow Pictures - complete data set\Flow Images\Twist CKO+ ; Sm22a-Cre\83\*.tif
+  metadata:
+    genotype: Twist CKO+; Sm22a-Cre
+- subject: 80
+  stain: 'ova'
+  images: E:\Flow Pictures - complete data set\Flow Images\Twist CKO+ ; Sm22a-Cre\88\*.tif
+  metadata:
+    genotype: Twist CKO+; Sm22a-Cre
+- subject: 127
+  stain: 'ova'
+  images: E:\Flow Pictures - complete data set\Flow Images\Twist CKO+ ; Sm22a-Cre\127\*.tif
+  metadata:
+    genotype: Twist CKO+; Sm22a-Cre

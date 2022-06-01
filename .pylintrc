@@ -1,0 +1,13 @@
+[MASTER]
+disable=
+    C0114, # missing-module-docstring
+
+[TYPECHECK]
+# List of members which are set dynamically and missed by Pylint inference
+# system, and so shouldn't trigger E1101 when accessed.
+generated-members=numpy.*, cv2.*, matlab.*, pydantic.*
+
+[FORMAT]
+disable=logging-fstring-interpolation
+max-line-length=160
+good-names=i,j,k,ex,Run,_,pk,x,y,xx,yy,mu,a,b,c,d,cx,cy,cs,rr,cc,L,S,n,kp,T,R,o,p,im,h5,x1,x2,y1,y2,ax,ki,t,df,s,fi
