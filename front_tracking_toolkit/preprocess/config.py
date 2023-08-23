@@ -1,4 +1,4 @@
-from typing import Literal, Union
+from typing import Literal, Optional, Union
 
 import numpy as np
 
@@ -8,10 +8,10 @@ from front_tracking_toolkit.util import FTBaseModel
 class CropOptionsKwargs(FTBaseModel):
     ''' Kwargs for crop Options
     '''
-    x1: int = None
-    y1: int = None
-    x2: int = None
-    y2: int = None
+    x1: Optional[int] = None
+    y1: Optional[int] = None
+    x2: Optional[int] = None
+    y2: Optional[int] = None
 
 class CropOptions(FTBaseModel):
     ''' Options for crop step
@@ -30,8 +30,8 @@ class INormOptionsKwargs(FTBaseModel):
     '''
     exclude_outliers: bool = False
     outlier_threshold: float = 3.5
-    vmin: float = None
-    vmax: float = None
+    vmin: Optional[float] = None
+    vmax: Optional[float] = None
 
 class INormOptions(FTBaseModel):
     ''' Options for intensity normalization step
@@ -63,7 +63,7 @@ class PreprocessOptions(FTBaseModel):
     ''' preprocessing options
     '''
     dry: bool = False
-    dest: str = None
+    dest: Optional[str] = None
     crop: CropOptions = CropOptions()
     inorm: INormOptions = INormOptions()
     icorr: ICorrOptions = ICorrOptions()

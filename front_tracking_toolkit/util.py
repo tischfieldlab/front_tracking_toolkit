@@ -39,6 +39,6 @@ class FTBaseModel(BaseModel):
     class Config:
         ''' Configuration for FTBaseModel '''
         arbitrary_types_allowed = True
-        validate_all = True
+        validate_default = True
         validate_assignment = True
         extra = 'forbid'
