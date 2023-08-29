@@ -1,6 +1,6 @@
 import os
 from distutils.log import warn
-from typing import List
+from typing import List, Union
 
 import numpy as np
 import pandas as pd
@@ -184,6 +184,40 @@ class Experiment(object):
         all_data = pd.concat(dsets, ignore_index=True)
         all_data['vm'] = np.sqrt(all_data['vx']**2 + all_data['vy']**2)
         return all_data
+
+
+    def load_image_intensities(self, samples=None, stage='preprocessed', incldue_meta: Union[None, List[str]] = None) -> pd.DataFrame:
+        ''' Load whole image intensities
+        '''
+        if samples is None:
+            samples = self.samples
+        elif isinstance(samples, Sample):
+            samples = [samples]
+
+        whole_img_intensities = []
+        for sample in tqdm.tqdm(samples, desc='Loading Samples', leave=False):
+            imgs = sample.load_images(stage=stage)
+            means = np.mean(imgs, axis=(1,2))
+            medians = np.median(imgs, axis=(1,2))
+            sums = np.sum(imgs, axis=(1,2))
+
+            if incldue_meta is not None:
+                meta = {m: self.metadata.loc[(sample.subject, sample.stain), m] for m in incldue_meta}
+            else:
+                meta = {}
+
+            for i in range(imgs.shape[0]):
+                whole_img_intensities.append({
+                    'subject': sample.subject,
+                    'stain': sample.stain,
+                    **meta,
+                    't': i * 60,
+                    'mean': means[i],
+                    'median': medians[i],
+                    'sum': sums[i]
+                })
+
+        return pd.DataFrame(whole_img_intensities)
 
 
     def _read_experiment_definition(self) -> None:
