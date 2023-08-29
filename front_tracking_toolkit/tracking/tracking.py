@@ -77,7 +77,7 @@ class FrontTrackOptions(FTBaseModel):
     invert: int = 0
     noisy: int = 0
     thick: int = 1
-    maxSpeed: int = 1.5
+    maxSpeed: float = 1.5
     maxPx: int = 40
     bac: Union[int, Literal['first']] = 0
     scale: float = 1.0
