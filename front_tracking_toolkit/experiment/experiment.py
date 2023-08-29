@@ -156,7 +156,7 @@ class Experiment(object):
         return True
 
 
-    def load_tracking_results(self, samples=None) -> pd.DataFrame:
+    def load_tracking_results(self, samples=None, incldue_meta: Union[None, List[str]] = None) -> pd.DataFrame:
         ''' Load tracking results
         '''
         if samples is None:
@@ -172,7 +172,11 @@ class Experiment(object):
                 data = pd.read_csv(path)
                 data['subject'] = sample.subject
                 data['stain'] = sample.stain
-                #data['genotype'] = self.metadata[subject]['Genotype']
+
+                if incldue_meta is not None:
+                    for meta in incldue_meta:
+                        data[meta] = self.metadata.loc[(sample.subject, sample.stain), meta]
+
                 dsets.append(data)
             else:
                 warn(f'Warning: tracking results not found for subject {sample.subject} and stain {sample.stain}, expected to find results here: "{path}"')
