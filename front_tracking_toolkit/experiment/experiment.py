@@ -200,6 +200,7 @@ class Experiment(object):
             means = np.mean(imgs, axis=(1,2))
             medians = np.median(imgs, axis=(1,2))
             sums = np.sum(imgs, axis=(1,2))
+            stdev = np.std(imgs, axis=(1,2))
 
             if incldue_meta is not None:
                 meta = {m: self.metadata.loc[(sample.subject, sample.stain), m] for m in incldue_meta}
@@ -214,7 +215,8 @@ class Experiment(object):
                     't': i * 60,
                     'mean': means[i],
                     'median': medians[i],
-                    'sum': sums[i]
+                    'sum': sums[i],
+                    'std': stdev[i],
                 })
 
         return pd.DataFrame(whole_img_intensities)
