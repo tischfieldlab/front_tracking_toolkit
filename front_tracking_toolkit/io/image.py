@@ -1,7 +1,8 @@
 import glob
 import os
 import xml.etree.ElementTree as ET
-from typing import Iterable, Tuple, Union, List
+from typing import Any, Callable, Iterable, Tuple, Union, List
+from datetime import datetime
 
 import cv2
 import numpy as np
@@ -156,16 +157,77 @@ def get_scale_for_image(path: str) -> Tuple[float, str]:
     Tuple[float, str]: scale and units
     '''
     # try for Leica metadata
+    return get_meta_for_Leica_image(path, read_scale_info)
+
+
+def get_meta_for_Leica_image(path: str, method: Callable[[str], Any]) -> Any:
     dirname = os.path.dirname(path)
     base = os.path.basename(path)
     meta = os.path.join(dirname, '.Metadata', f'{base}.cal.xml')
     if os.path.exists(meta):
-        return (read_scale_info(meta), 'mm')
-
-    return (1.0, 'unknown')
+        return method(meta)
 
 
-def read_scale_info(path: str) -> float:
+def get_all_meta_for_leica_image(path: str) -> dict:
+    namespace = 'http://schemas.datacontract.org/2004/07/LeicaMicrosystems.DataEntities.V3_2'
+    interesting_image_tags = [
+        'CreationUserName',
+        'ModificationUserName',
+        'AcquiredDate',
+        'CreationDate',
+        'XMetresPerPixel',
+        'YMetresPerPixel',
+        'BitDepth',
+        'NumPixelsX',
+        'NumPixelsY',
+        'FileSize',
+    ]
+    interesting_camera_tags = [
+        'Name',
+        'Serial_Number',
+        'Exposure',
+        'Gamma',
+        'Gain',
+        'Auto_Exposure',
+        'Brightness',
+        'Black_Clip',
+        'White_Clip',
+        'Image_Type',
+        'Capture_Format',
+    ]
+
+    dirname = os.path.dirname(path)
+    base = os.path.basename(path)
+    meta_path = os.path.join(dirname, '.Metadata', f'{base}.cal.xml')
+    meta = {}
+    if os.path.exists(meta_path):
+        tree = ET.parse(meta_path)
+        stage = None
+        for child in tree.find(".//{"+namespace+"}LasImage").iter():
+            tag = child.tag.split('}')[1]
+
+            if tag in ['LasImage', 'Camera', 'ImageValues']:
+                stage = tag
+                continue
+
+            if stage == 'LasImage':
+                if tag in interesting_image_tags:
+                    meta[tag] = child.text
+
+            elif stage == 'Camera':
+                if tag in interesting_camera_tags:
+                    meta[tag] = child.text
+
+            elif stage == 'ImageValues':
+                if tag == 'ImageValue':
+                    name = child.find('{'+namespace+'}Name').text
+                    value = child.find('{'+namespace+'}Value').text
+                    meta[name] = value
+    return meta
+
+
+
+def read_scale_info(path: str) -> Tuple[float, str]:
     ''' Read scale information from Leica metadata
 
     Parameters:
@@ -174,7 +236,25 @@ def read_scale_info(path: str) -> float:
     Returns:
     float: pixel size in mm
     '''
+    try:
+        namespace = 'http://schemas.datacontract.org/2004/07/LeicaMicrosystems.DataEntities.V3_2'
+        tree = ET.parse(path)
+        res = tree.find(".//{"+namespace+"}XMetresPerPixel").text
+        return (float(res) * 1e3, "mm")
+    except:
+        return (1.0, 'unknown')
+
+
+def read_acquisition_datetime(path: str) -> datetime:
+    ''' Read image acquisition date and time
+
+    Parameters:
+    path (str): path to Leica metadata xml file
+
+    Returns:
+    datetime: date and time the image was acquired
+    '''
     namespace = 'http://schemas.datacontract.org/2004/07/LeicaMicrosystems.DataEntities.V3_2'
     tree = ET.parse(path)
-    res = tree.find(".//{"+namespace+"}XMetresPerPixel").text
-    return float(res) * 1e3
+    res = tree.find(".//{"+namespace+"}AcquiredDate").text
+    return datetime.fromisoformat(res)

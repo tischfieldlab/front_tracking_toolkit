@@ -222,6 +222,21 @@ class Experiment(object):
         return pd.DataFrame(whole_img_intensities)
 
 
+    def load_image_metadata(self, samples=None, stage='raw') -> pd.DataFrame:
+        if samples is None:
+            samples = self.samples
+        elif isinstance(samples, Sample):
+            samples = [samples]
+
+        meta = []
+        for sample in tqdm.tqdm(samples, desc='Loading Samples', leave=False):
+            m = sample.images[stage].load_image_metadata()
+            m['subject'] = sample.subject
+            m['stain'] = sample.stain
+            meta.append(m)
+        return pd.concat(meta, ignore_index=True)
+
+
     def _read_experiment_definition(self) -> None:
         ''' Read experiment definition from a yaml file
         '''

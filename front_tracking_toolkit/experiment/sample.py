@@ -4,11 +4,10 @@ from enum import Enum, unique
 from typing import Dict, Iterable, List, Tuple, Union
 
 import numpy as np
+import pandas as pd
 from tabulate import tabulate
 from front_tracking_toolkit.experiment.config import PipelineConfig
-
-
-from front_tracking_toolkit.io.image import find_images, load_image, load_images
+from front_tracking_toolkit.io.image import find_images, get_all_meta_for_leica_image, load_image, load_images
 
 @unique
 class ImageStage(str, Enum):
@@ -33,6 +32,14 @@ class ImageSeries(object):
         self.paths.clear()
         if self.path_spec is not None:
             self.paths = find_images(self.path_spec)
+
+    def load_image_metadata(self) -> pd.DataFrame:
+        meta = []
+        for i, img_path in enumerate(self.paths):
+            m = get_all_meta_for_leica_image(img_path)
+            m['index'] = i
+            meta.append(m)
+        return pd.DataFrame(meta)
 
     def __len__(self):
         return len(self.paths)
