@@ -6,6 +6,7 @@ from datetime import datetime
 
 import cv2
 import numpy as np
+import pandas as pd
 import tifffile
 from skimage import color, img_as_ubyte
 
@@ -213,6 +214,11 @@ def get_all_meta_for_leica_image(path: str) -> dict:
             if stage == 'LasImage':
                 if tag in interesting_image_tags:
                     meta[tag] = child.text
+
+                    # convert to datetime if necessary
+                    if tag in ['AcquiredDate', 'CreationDate']:
+                        meta[tag] = pd.to_datetime(meta[tag])
+
 
             elif stage == 'Camera':
                 if tag in interesting_camera_tags:
