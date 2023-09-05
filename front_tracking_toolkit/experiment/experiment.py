@@ -238,31 +238,35 @@ class Experiment(object):
 
 
         all_samples = {}
-        for sample in config['samples']:
-            sample['subject'] = str(sample['subject'])
-            sample['stain'] = str(sample['stain'])
-            sid = (sample['subject'], sample['stain'])
-            if sid in all_samples:
-                raise ValueError(f'Error: subject "{sample["subject"]}" and stain "{sample["stain"]}" have already been parsed! duplicates are not allowed!')
+        for i, sample in enumerate(config['samples']):
+            try:
+                sample['subject'] = str(sample['subject'])
+                sample['stain'] = str(sample['stain'])
+                sid = (sample['subject'], sample['stain'])
+                if sid in all_samples:
+                    raise ValueError(f'Error: subject "{sample["subject"]}" and stain "{sample["stain"]}" have already been parsed! duplicates are not allowed!')
 
-            s = Sample(sample['subject'], sample['stain'])
-            s.register_images(ImageStage.RAW, sample['images'])
+                s = Sample(sample['subject'], sample['stain'])
+                s.register_images(ImageStage.RAW, sample['images'])
 
-            proc_img_base = self.config.processed_images_pattern.format(subject=sample['subject'], stain=sample['stain'])
-            s.register_images(ImageStage.PREPROCESSED, os.path.join(self.config.basedir, proc_img_base))
+                proc_img_base = self.config.processed_images_pattern.format(subject=sample['subject'], stain=sample['stain'])
+                s.register_images(ImageStage.PREPROCESSED, os.path.join(self.config.basedir, proc_img_base))
 
-            s.scale = tuple(sample.get('scale', get_scale_for_image(s.images[ImageStage.RAW].paths[0])))
-            s.mask = sample.get('mask', None)
-            s.metadata = sample.get('metadata', {})
+                s.scale = tuple(sample.get('scale', get_scale_for_image(s.images[ImageStage.RAW].paths[0])))
+                s.mask = sample.get('mask', None)
+                s.metadata = sample.get('metadata', {})
 
-            if 'pipeline' in sample:
-                if 'preprocess' in sample['pipeline']:
-                    s.pipeline.preprocess = PreprocessOptions.merge(self.pipeline.preprocess, sample['pipeline']['preprocess'])
+                if 'pipeline' in sample:
+                    if 'preprocess' in sample['pipeline']:
+                        s.pipeline.preprocess = PreprocessOptions.merge(self.pipeline.preprocess, sample['pipeline']['preprocess'])
 
-                if 'tracking' in sample['pipeline']:
-                    s.pipeline.preprocess = PreprocessOptions.merge(self.pipeline.preprocess, sample['pipeline']['tracking'])
+                    if 'tracking' in sample['pipeline']:
+                        s.pipeline.preprocess = PreprocessOptions.merge(self.pipeline.preprocess, sample['pipeline']['tracking'])
 
-            all_samples[sid] = s
+                all_samples[sid] = s
+            except Exception as ex:
+                raise Exception(f'While reading sample #{i} (subject="{sample["subject"]}", stain="{sample["stain"]}"), an exception was encountered!') from ex
+
         self._sample_map = all_samples
 
 
