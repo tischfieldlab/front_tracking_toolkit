@@ -37,7 +37,12 @@ class ImageSeries(object):
         meta = []
         for i, img_path in enumerate(self.paths):
             m = get_all_meta_for_leica_image(img_path)
+            m['filename'] = img_path
             m['index'] = i
+            if i == 0:
+                m['AcquiredDelta'] = pd.to_timedelta(0)
+            else:
+                m['AcquiredDelta'] = m['AcquiredDate'] - meta[i-1]['AcquiredDate']
             meta.append(m)
         return pd.DataFrame(meta)
 
