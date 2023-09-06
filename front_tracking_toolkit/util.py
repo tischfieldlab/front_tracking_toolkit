@@ -31,9 +31,9 @@ class FTBaseModel(BaseModel):
             'exclude_defaults': True
         }
         to_merge = [a.dict(**opts) if isinstance(a, BaseModel) else a for a in args]
-        #print(to_merge)
+        # print(to_merge)
         merged = mergedeep.merge({}, *to_merge)
-        print(merged)
+        # print(merged)
         return cls(**merged)
 
     class Config:
