@@ -29,6 +29,11 @@ class Experiment(object):
         self._sample_map: dict = None
         self._read_experiment_definition()
 
+    def reload(self):
+        ''' Reload this experiment
+        '''
+        self._read_experiment_definition()
+
     @property
     def samples(self) -> List[Sample]:
         ''' Get the samples in this experiment
