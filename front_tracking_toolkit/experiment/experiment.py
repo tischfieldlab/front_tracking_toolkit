@@ -77,7 +77,7 @@ class Experiment(object):
         return df
 
     def get_images(self, subject, stain, stage='raw', t=None) -> List[str]:
-        ''' Load image(s) for a given subject and stain
+        ''' Get a list of image file paths for a given subject, stain, stage, and timepoints
         '''
         return self.get_sample(subject, stain).get_images(t=t, stage=stage)
 
