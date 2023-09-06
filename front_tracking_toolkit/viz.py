@@ -1,3 +1,4 @@
+import math
 from typing import Iterable, Tuple, Union
 
 import matplotlib.pyplot as plt
@@ -10,7 +11,7 @@ from mpl_toolkits.axes_grid1.axes_grid import ImageGrid
 
 
 def visualize_frames(images: Union[np.ndarray, Iterable[np.ndarray]], vmin: float = None, vmax: float = None, cmap: str = 'viridis', interval: int = 100,
-                     figsize: Tuple[float, float] = None, labels: Union[Iterable[str], str] = None) -> HTML:
+                     figsize: Tuple[float, float] = None, labels: Union[Iterable[str], str] = None, colwrap: int = None) -> HTML:
     ''' Visualize frames as a matplotlib animation for jupyter notebooks
 
     If frames are RGB (i.e. len(images.shape) == 4), images are displayed as RGB. Otherwise, images are displayed using `cmap` and `vmin`/`vmax`.
@@ -33,13 +34,20 @@ def visualize_frames(images: Union[np.ndarray, Iterable[np.ndarray]], vmin: floa
     else:
         nplots = len(images)
 
+    if colwrap is None:
+        ncols = nplots
+        nrows = 1
+    else:
+        ncols = colwrap
+        nrows = math.ceil(nplots / ncols)
+
     if isinstance(labels, str):
         labels = [labels]
     elif labels is None:
         labels = []
 
     if figsize is None:
-        figsize = (6.0 * nplots, 4.5)
+        figsize = (6.0 * ncols, 4.5 * nrows)
 
     nframes = np.max([imgs.shape[0] for imgs in images])
     vmin = np.min([imgs.min() for imgs in images]) if vmin is None else vmin
@@ -51,7 +59,7 @@ def visualize_frames(images: Union[np.ndarray, Iterable[np.ndarray]], vmin: floa
     grid = ImageGrid(
         fig=fig,
         rect=111,
-        nrows_ncols=(1, nplots),
+        nrows_ncols=(nrows, ncols),
         cbar_location="right",
         cbar_mode="single",
         axes_pad=0.15,
@@ -61,6 +69,10 @@ def visualize_frames(images: Union[np.ndarray, Iterable[np.ndarray]], vmin: floa
     needs_cbar = False
 
     for i, ax in enumerate(grid):
+        if i >= nplots:
+            ax.axis('off')
+            continue
+
         try:
             ax.set_title(labels[i])
         except IndexError:
