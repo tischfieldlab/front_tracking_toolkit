@@ -81,12 +81,12 @@ class Experiment(object):
         df = df.set_index(['subject', 'stain'])
         return df
 
-    def get_images(self, subject, stain, stage='raw', t=None) -> List[str]:
+    def get_images(self, subject: str, stain: str, stage: ImageStage = 'raw', t: Union[range, int] = None) -> List[str]:
         ''' Get a list of image file paths for a given subject, stain, stage, and timepoints
         '''
         return self.get_sample(subject, stain).get_images(t=t, stage=stage)
 
-    def load_images(self, subject, stain, stage='raw', t=None) -> np.ndarray:
+    def load_images(self, subject, stain, stage='raw', t: Union[range, int] = None) -> np.ndarray:
         ''' Load image(s) for a given subject and stain
         '''
         return self.get_sample(subject, stain).load_images(t=t, stage=stage)
@@ -145,6 +145,7 @@ class Experiment(object):
             'lines_frames': lines_frames,
             'areas_frames': areas_frames,
         }
+
 
     def has_tracking_results(self, samples=None) -> bool:
         ''' Tell if tracking results exist '''
@@ -302,8 +303,10 @@ class Experiment(object):
         meta['has tracking'] = meta.apply(lambda row: self.has_tracking_results(self.get_sample(row['subject'], row['stain'])), axis=1)
         print(tabulate(meta, headers='keys', showindex=False))
 
+
     def __str__(self) -> str:
         return self.metadata.to_string() + '\n' + self.config
+
 
     def __repr__(self) -> str:
         return f'{self.__class__.__name__}("{self.config_file}")'
