@@ -291,7 +291,11 @@ class Experiment(object):
         print(self.config)
         print('\n')
         print("Experiment Metadata:")
-        print(tabulate(self.metadata.reset_index(), headers='keys', showindex=False))
+        meta = self.metadata.reset_index()
+        meta['# raw images'] = meta.apply(lambda row: len(self.get_images(row['subject'], row['stain'], stage=ImageStage.RAW)), axis=1)
+        meta['# proc images'] = meta.apply(lambda row: len(self.get_images(row['subject'], row['stain'], stage=ImageStage.PREPROCESSED)), axis=1)
+        meta['has tracking'] = meta.apply(lambda row: self.has_tracking_results(self.get_sample(row['subject'], row['stain'])), axis=1)
+        print(tabulate(meta, headers='keys', showindex=False))
 
     def __str__(self) -> str:
         return self.metadata.to_string() + '\n' + self.config
