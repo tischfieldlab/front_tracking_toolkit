@@ -296,7 +296,7 @@ class Experiment(object):
         '''
         print(self.config)
         print('\n')
-        print("Experiment Metadata:")
+        print(f'Experiment Metadata ({len(self.samples)} samples):')
         meta = self.metadata.reset_index()
         meta['# raw images'] = meta.apply(lambda row: len(self.get_images(row['subject'], row['stain'], stage=ImageStage.RAW)), axis=1)
         meta['# proc images'] = meta.apply(lambda row: len(self.get_images(row['subject'], row['stain'], stage=ImageStage.PREPROCESSED)), axis=1)

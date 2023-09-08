@@ -30,6 +30,11 @@ def is_outlier(points, thresh=3.5):
     return modified_z_score > thresh
 
 
+def stat_exclude_outliers(method, threshold=3.5):
+    def stat_exclude_outliers_impl(data):
+        method(data[(~is_outlier(data, threshold))])
+    return stat_exclude_outliers_impl
+
 def max_exclude_outliers(data, threshold=3.5):
     ''' Calculate the max value of `data`, excluding outliers
     '''
