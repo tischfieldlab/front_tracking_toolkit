@@ -192,7 +192,7 @@ class Experiment(object):
         return all_data
 
 
-    def load_image_intensities(self, samples=None, stage='preprocessed', incldue_meta: Union[None, List[str]] = None) -> pd.DataFrame:
+    def load_image_intensities(self, samples=None, stage='preprocessed', incldue_meta: Union[None, List[str]] = None, form: Literal['long', 'wide'] = 'wide') -> pd.DataFrame:
         ''' Load whole image intensities
         '''
         if samples is None:
@@ -225,7 +225,16 @@ class Experiment(object):
                     'std': stdev[i],
                 })
 
-        return pd.DataFrame(whole_img_intensities)
+        df = pd.DataFrame(whole_img_intensities)
+
+        if form == 'long':
+            df = pd.melt(df,
+                         id_vars=['subject', 'stain', 't'] + incldue_meta,
+                         value_vars=['mean', 'median', 'sum', 'std'],
+                         var_name='measure',
+                         value_name='intensity')
+
+        return df
 
 
     def load_image_metadata(self, samples=None, stage='raw') -> pd.DataFrame:
