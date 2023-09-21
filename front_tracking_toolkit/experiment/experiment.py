@@ -268,7 +268,7 @@ class Experiment(object):
                     raise ValueError(f'Error: subject "{sample["subject"]}" and stain "{sample["stain"]}" have already been parsed! duplicates are not allowed!')
 
                 s = Sample(sample['subject'], sample['stain'])
-                s.register_images(ImageStage.RAW, sample['images'])
+                s.register_images(ImageStage.RAW, os.path.join(self.config.basedir, sample['images']))
 
                 proc_img_base = self.config.processed_images_pattern.format(subject=sample['subject'], stain=sample['stain'])
                 s.register_images(ImageStage.PREPROCESSED, os.path.join(self.config.basedir, proc_img_base))
