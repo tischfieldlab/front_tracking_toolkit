@@ -1,6 +1,6 @@
 import os
 from distutils.log import warn
-from typing import List, Union
+from typing import List, Literal, Union
 
 import numpy as np
 import pandas as pd
@@ -22,6 +22,11 @@ class Experiment(object):
     '''
 
     def __init__(self, config: str) -> None:
+        ''' Construct a new `Experiment` object
+
+        Parameters:
+        config: path to a yaml experimental configuration
+        '''
         super().__init__()
         self.config_file = config
         self.config: ExperimentConfig = None
@@ -238,6 +243,7 @@ class Experiment(object):
 
 
     def load_image_metadata(self, samples=None, stage='raw') -> pd.DataFrame:
+        ''' Load metadata from images '''
         if samples is None:
             samples = self.samples
         elif isinstance(samples, Sample):
